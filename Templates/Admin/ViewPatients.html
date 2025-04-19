@@ -1,0 +1,29 @@
+{% extends '../Common/Home.html' %}
+{% block content %}
+<section class="offer_section layout_padding-bottom">
+    <div class="offer_container">
+        <div class="container ">
+            <div class="row">
+                {% for patient in patients %}
+                    <div class="col-md-6">
+                        <div class="box ">
+                            <div class="img-box">
+                                <img src="{{ patient.photo.url }}" alt>
+                            </div>
+                            <div class="detail-box">
+                                <h5 class="mb-3">{{ patient.name }}</h5>
+                                <p>Kin : {{ patient.kin }}</p>
+                                <p>Contact : {{ patient.phone }}</p>
+                                <p>Username : {{ patient.username }}</p>
+                                {% if patient|has_pending_alerts %}
+                                    <a href="{% url 'pending_approvals' id=patient.id %}">Pending Approvals</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

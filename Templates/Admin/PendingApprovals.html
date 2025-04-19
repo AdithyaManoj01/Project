@@ -1,0 +1,54 @@
+{% extends '../Common/Home.html' %}
+{% block content %}
+<section class="food_section layout_padding-bottom">
+    <div class="container pt-5">
+        <div class="heading_container heading_center pt-5">
+            <h2>Pending Approvals</h2>
+        </div>
+
+        <!-- <ul class="filters_menu">
+            <li class="active" data-filter="*">All</li>
+            <li data-filter=".medicine">Medicine</li>
+            <li data-filter=".reminder">Reminder</li>
+        </ul> -->
+
+        <div class="filters-content">
+            <div class="row grid">
+                {% for medicine in medicines %}
+                    <div class="col-sm-6 col-lg-4 all medicine">
+                        <div class="box">
+                            <div>
+                                <div class="detail-box">
+                                    <h5>{{ medicine.medicine }}</h5>
+                                    <p>Time: {{ medicine.time }}</p>
+                                    <p>Dose: {{ medicine.dose }}</p>
+                                    <div class="options">
+                                        <a href="{% url 'change_status' id=medicine.id type='medicine' status='1' %}" class="approve">Approve</a>
+                                        <a href="{% url 'change_status' id=medicine.id type='medicine' status='2' %}" class="reject">Reject</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                {% for reminder in reminders %}
+                    <div class="col-sm-6 col-lg-4 all reminder">
+                        <div class="box">
+                            <div>
+                                <div class="detail-box">
+                                    <h5>{{ reminder.topic }}</h5>
+                                    <p>{{ reminder.reminder }}</p>
+                                    <div class="options">
+                                        <a href="{% url 'change_status' id=reminder.id type='reminder' status='1' %}" class="approve">Approve</a>
+                                        <a href="{% url 'change_status' id=reminder.id type='reminder' status='2' %}" class="reject">Reject</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

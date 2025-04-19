@@ -1,0 +1,104 @@
+{% extends '../Common/Home.html' %}
+{% block content %}
+<section class="food_section layout_padding-bottom">
+    <div class="container pt-5">
+        <div class="heading_container heading_center pt-5">
+            <h2>Alerts</h2>
+        </div>
+
+        <div class="filters-content">
+            <div class="row grid">
+                {% for medicine in medicines %}
+                <div class="col-sm-6 col-lg-4 all medicine">
+                    <div class="box">
+                        <div>
+                            <div class="detail-box view-alert">
+                                <h5>{{ medicine.medicine }}</h5>
+                                <p class="countdown m-0"
+                                    data-target-time="{{ medicine.time }}"
+                                    data-message="Time for Medicine: {{ medicine.medicine }}, {{ medicine.dose }}">
+                                    Time: {{ medicine.time }}
+                                </p>
+                                <p class="m-0">Dose: {{ medicine.dose }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                {% for reminder in reminders %}
+                <div class="col-sm-6 col-lg-4 all reminder">
+                    <div class="box">
+                        <div>
+                            <div class="detail-box view-alert">
+                                <h5>{{ reminder.topic }}</h5>
+                                <p class="countdown m-0"
+                                    data-target-time="{{ reminder.time }}"
+                                    data-message="{{ reminder.reminder }}">Time: {{ reminder.time }}</p>
+                                <p>{{ reminder.reminder }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="d-none" id="alert-container">
+    <div class="alert-wrap">
+        <div class="alert">
+            <p></p>
+        </div>
+        <div class="btn-wrap">
+            <button class="btn btn-sm btn-primary" id="dismiss">OK</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const countdownElements = document.getElementsByClassName('countdown');
+        const alertContainer = document.querySelector("#alert-container");
+        const alert = alertContainer.querySelector(".alert p");
+        const dismiss = alertContainer.querySelector("#dismiss");
+
+        [...countdownElements].forEach(countdownElement => {
+            var timeString = countdownElement.getAttribute("data-target-time");
+            var message = countdownElement.getAttribute("data-message");
+            
+            const [time, period] = timeString.split(' ');
+            const [hours, minutes] = time.split(':');
+
+            let hour = parseInt(hours);
+            hour += (period == "p.m." && hours != 12) ? 12 : 0;
+            
+            const date = new Date();
+            date.setHours(parseInt(hour));
+            date.setMinutes(parseInt(minutes));
+            date.setSeconds(0);
+
+            const intervalId = setInterval(() => {
+                const currentTime = new Date().getTime();
+                const targetTime = date.getTime();
+
+                console.log(new Date(currentTime).toString())
+                console.log(new Date(targetTime).toString())
+
+                if (Math.abs(currentTime - targetTime) <= 1000) {
+                    alert.innerHTML = message;
+                    alertContainer.classList.remove("d-none");
+
+                    const speech = new SpeechSynthesisUtterance(message);
+                    window.speechSynthesis.speak(speech);
+                }
+            }, 1000);
+        });
+
+        dismiss.addEventListener("click", () => {
+            alertContainer.classList.add("d-none");
+        });
+    });
+</script>
+
+{% endblock %}
